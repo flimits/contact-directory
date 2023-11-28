@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
-const { GenerateSW } = require('workbox-webpack-plugin');
+const { InjectManifest } = require('workbox-webpack-plugin');
+
 
 const path = require('path');
 
@@ -15,7 +16,7 @@ module.exports = () => {
 
     // TODO: Add the correct output
     output: {
-      filename: "build/[name].js",
+      filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
     },
 
@@ -23,21 +24,27 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html',
-        title: 'Contact Directory'
+        title: 'Contact Cards'
+      }),
+      new InjectManifest({
+        swSrc: './src-sw.js',
+        swDest: 'src-sw.js',
       }),
 
-      new GenerateSW(),
       new WebpackPwaManifest({
-        name: 'Contacts',
+        fingerprints: false,
+        inject: true,
+        name: 'Contact Cards',
         short_name: 'Contacts',
         description: 'Keep track of contacts locally',
-        background_color: '#7eb4e2',
+        background_color: '#225ca3',
+        theme_color: '#225ca3',
         start_url: './',
         publicPath: './',
         icons: [{
           src: path.resolve('src/images/logo.png'),
           sizes: [96, 128, 192, 256, 384, 512],
-          destination: path.join('src', 'icons'),
+          destination: path.join('assets', 'icons'),
         }],
       })
     ],
